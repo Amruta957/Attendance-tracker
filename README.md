@@ -35,15 +35,18 @@ This project demonstrates how to:
 ## 📂 Project Structure
 attendance-tracker/
 │
-├── .github/workflows/ # CI/CD pipeline
+├── .github/
+│ └── workflows/ # CI/CD pipeline (GitHub Actions)
+│
 ├── tests/ # Test cases
+│
 ├── Dockerfile # Docker configuration
 ├── index.html # Frontend UI
 ├── server.js # Backend server
-├── package.json # Dependencies
-├── .gitignore
-├── .dockerignore
-└── README.md
+├── package.json # Project dependencies
+├── .gitignore # Git ignore rules
+├── .dockerignore # Docker ignore rules
+└── README.md # Project documentation
 
 
 ---
