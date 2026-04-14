@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+    h1 { color: #333; }
+    .subject-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin: 12px 0; }
+    .low { border-left: 4px solid #e74c3c; background: #fff5f5; }
+    .good { border-left: 4px solid #27ae60; background: #f0fff4; }
+    .percent { font-size: 1.4em; font-weight: bold; }
+    .warning { color: #e74c3c; font-size: 0.85em; }
+    input { padding: 6px; margin: 4px; border: 1px solid #ccc; border-radius: 4px; width: 80px; }
+    button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+    #addBtn { background: #3498db; color: white; }
+    #subjectName { width: 160px; }
+  </style>
+</head>
+<body>
+  <h1>Attendance Tracker</h1>
+  <p>Criteria: 75% attendance required</p>
+
+  <div style="margin-bottom:20px">
+    <input id="subjectName" placeholder="Subject name" />
+    <input id="attended" type="number" placeholder="Attended" min="0" />
+    <input id="total" type="number" placeholder="Total" min="1" />
+    <button id="addBtn" onclick="addSubject()">Add Subject</button>
+  </div>
+
+  <div id="subjects"></div>
+
+  <script>
+    let subjects = JSON.parse(localStorage.getItem('subjects') || '[]');
+
+    function render() {
+      const container = document.getElementById('subjects');
+      if (subjects.length === 0) {
+        container.innerHTML = '<p>No subjects added yet.</p>';
+        return;
+      }
+      container.innerHTML = subjects.map((s, i) => {
+        const pct = s.total > 0 ? ((s.attended / s.total) * 100).toFixed(1) : 0;
+        const low = pct < 75;
+        const needed = Math.ceil((0.75 * s.total - s.attended) / 0.25);
+        return `<div class="subject-card ${low ? 'low' : 'good'}">
+          <strong>${s.name}</strong>
+          <span class="percent" style="float:right">${pct}%</span>
+          <br>Attended: ${s.attended} / ${s.total}
+          ${low ? `<p class="warning">Below 75%! Need ${needed > 0 ? needed : 0} more classes.</p>` : '<p style="color:#27ae60">On track!</p>'}
+          <button onclick="deleteSubject(${i})" style="background:#e74c3c;color:white;margin-top:8px">Remove</button>
+        </div>`;
+      }).join('');
+    }
+
+    function addSubject() {
+      const name = document.getElementById('subjectName').value.trim();
+      const attended = parseInt(document.getElementById('attended').value);
+      const total = parseInt(document.getElementById('total').value);
+      if (!name || isNaN(attended) || isNaN(total) || total < 1) {
+        alert('Please fill all fields correctly.'); return;
+      }
+      if (attended > total) { alert('Attended cannot exceed total.'); return; }
+      subjects.push({ name, attended, total });
+      localStorage.setItem('subjects', JSON.stringify(subjects));
+      document.getElementById('subjectName').value = '';
+      document.getElementById('attended').value = '';
+      document.getElementById('total').value = '';
+      render();
+    }
+
+    function deleteSubject(i) {
+      subjects.splice(i, 1);
+      localStorage.setItem('subjects', JSON.stringify(subjects));
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
