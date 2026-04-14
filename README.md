@@ -33,21 +33,7 @@ This project demonstrates how to:
 ---
 
 ## 📂 Project Structure
-attendance-tracker/
-│
-├── .github/
-│ └── workflows/ # CI/CD pipeline (GitHub Actions)
-│
-├── tests/ # Test cases
-│
-├── Dockerfile # Docker configuration
-├── index.html # Frontend UI
-├── server.js # Backend server
-├── package.json # Project dependencies
-├── .gitignore # Git ignore rules
-├── .dockerignore # Docker ignore rules
-└── README.md # Project documentation
-
+<img width="703" height="305" alt="image" src="https://github.com/user-attachments/assets/0356d144-691f-464c-bfad-5633ac5d2d81" />
 
 ---
 
