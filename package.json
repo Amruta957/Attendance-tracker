@@ -1,0 +1,13 @@
+{
+  "name": "attendance-tracker",
+  "version": "1.0.0",
+  "description": "Track student attendance against 75% criteria",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo Build complete",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
