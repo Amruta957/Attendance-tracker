@@ -31,16 +31,6 @@ This project demonstrates how to:
 
 ---
 
-## 🔄 DevOps Lifecycle Implemented
-
-✔ Version Control using GitHub  
-✔ Automated Build using npm  
-✔ Continuous Integration using GitHub Actions  
-✔ Automated Testing  
-✔ Containerization using Docker  
-✔ Cloud Deployment using Render  
-
----
 ## 🛠️ Tech Stack
 
 - Frontend: HTML  
@@ -137,6 +127,17 @@ https://attendance-tracker-zsj2.onrender.com
 - Docker Containerization  
 - Automated Testing  
 - Version Control (Git & GitHub)  
+
+---
+
+## 🔄 DevOps Lifecycle Implemented
+
+✔ Version Control using GitHub  
+✔ Automated Build using npm  
+✔ Continuous Integration using GitHub Actions  
+✔ Automated Testing  
+✔ Containerization using Docker  
+✔ Cloud Deployment using Render  
 
 ---
 
