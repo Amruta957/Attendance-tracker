@@ -1,81 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Attendance Tracker</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
-    h1 { color: #333; }
-    .subject-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin: 12px 0; }
-    .low { border-left: 4px solid #e74c3c; background: #fff5f5; }
-    .good { border-left: 4px solid #27ae60; background: #f0fff4; }
-    .percent { font-size: 1.4em; font-weight: bold; }
-    .warning { color: #e74c3c; font-size: 0.85em; }
-    input { padding: 6px; margin: 4px; border: 1px solid #ccc; border-radius: 4px; width: 80px; }
-    button { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
-    #addBtn { background: #3498db; color: white; }
-    #subjectName { width: 160px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Tracker System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  margin:0;
+  color:#fff;
+}
+
+.container { max-width:950px; margin:auto; padding:20px; }
+
+.card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  padding:20px;
+  border-radius:15px;
+  margin:10px 0;
+}
+
+input,select {
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  background: rgba(255,255,255,0.15);
+  color:white;
+  min-width:120px;
+}
+
+input::placeholder { color:rgba(255,255,255,0.7); }
+
+select { appearance:none; }
+
+select option {
+  background:#1e1e1e;
+  color:white;
+}
+
+button {
+  padding:8px 12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  color:white;
+  font-weight:600;
+}
+
+.add { background:#00c853; }
+.delete { background:#ff1744; }
+.edit { background:#2979ff; }
+.export { background:#ff9100; }
+
+.progress { height:10px; background:#444; border-radius:5px; }
+.bar { height:100%; border-radius:5px; }
+.good { background:#00e676; }
+.low { background:#ff5252; }
+
+.stats { display:flex; gap:10px; }
+
+.stat {
+  flex:1;
+  background: rgba(255,255,255,0.1);
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+}
+
+.stat h3 { color:#00e5ff; }
+.stat p { color:#ccc; }
+
+canvas {
+  background: rgba(255,255,255,0.1);
+  border-radius:10px;
+  padding:10px;
+  margin-top:10px;
+  height:300px !important;
+}
+
+.dark {
+  background: linear-gradient(135deg,#000,#111);
+}
+
+.warning { color:#ff5252; }
+
+#toast {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#333;
+  padding:10px;
+  border-radius:8px;
+  display:none;
+}
+</style>
 </head>
+
 <body>
-  <h1>Attendance Tracker</h1>
-  <p>Criteria: 75% attendance required</p>
 
-  <div style="margin-bottom:20px">
-    <input id="subjectName" placeholder="Subject name" />
-    <input id="attended" type="number" placeholder="Attended" min="0" />
-    <input id="total" type="number" placeholder="Total" min="1" />
-    <button id="addBtn" onclick="addSubject()">Add Subject</button>
-  </div>
+<div class="container">
 
-  <div id="subjects"></div>
+<h1 style="text-align:center;">📊 Attendance Tracker System</h1>
 
-  <script>
-    let subjects = JSON.parse(localStorage.getItem('subjects') || '[]');
+<div class="card">
+<input id="name" placeholder="Subject">
+<input id="attended" type="number" placeholder="Attended">
+<input id="total" type="number" placeholder="Total">
 
-    function render() {
-      const container = document.getElementById('subjects');
-      if (subjects.length === 0) {
-        container.innerHTML = '<p>No subjects added yet.</p>';
-        return;
+<button class="add" onclick="add()">Add</button>
+<button onclick="toggleDark()">🌙</button>
+
+<button class="export" onclick="downloadJSON()">JSON</button>
+<button class="export" onclick="downloadCSV()">CSV</button>
+
+<select onchange="changeTheme(this.value)">
+<option>Theme</option>
+<option value="blue">Blue</option>
+<option value="purple">Purple</option>
+<option value="dark">Dark</option>
+</select>
+
+<select onchange="sortData(this.value)">
+<option>Sort</option>
+<option value="high">High→Low</option>
+<option value="low">Low→High</option>
+</select>
+</div>
+
+<input id="search" placeholder="Search..." onkeyup="search()">
+
+<div class="stats">
+<div class="stat"><h3 id="totalSub">0</h3><p>Subjects</p></div>
+<div class="stat"><h3 id="avg">0%</h3><p>Average</p></div>
+</div>
+
+<select onchange="changeChart(this.value)">
+<option value="bar">Bar</option>
+<option value="line">Line</option>
+</select>
+
+<canvas id="chart"></canvas>
+
+<div id="list"></div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+let subjects = JSON.parse(localStorage.getItem('subjects')||'[]');
+let chartType="bar";
+let chart;
+
+function notify(msg){
+  const t=document.getElementById("toast");
+  t.innerText=msg;
+  t.style.display="block";
+  setTimeout(()=>t.style.display="none",2000);
+}
+
+function render(data=subjects){
+  const list=document.getElementById("list");
+
+  if(data.length===0){
+    list.innerHTML="<p>No data</p>";
+    drawChart();
+    return;
+  }
+
+  list.innerHTML=data.map((s,i)=>{
+    const pct=((s.attended/s.total)*100).toFixed(1);
+    const low=pct<75;
+
+    let needed=Math.ceil((0.75*s.total - s.attended)/(1-0.75));
+    let canMiss=Math.floor((s.attended - 0.75*s.total)/0.75);
+
+    let msg=low ? `⚠ Need ${needed} classes` : `😎 Can miss ${canMiss}`;
+
+    return `
+    <div class="card">
+      <h3>${s.name} <span style="float:right">${pct}%</span></h3>
+      <p>${s.attended}/${s.total}</p>
+
+      <div class="progress">
+        <div class="bar ${low?'low':'good'}" style="width:${pct}%"></div>
+      </div>
+
+      <p class="${low?'warning':''}">${msg}</p>
+
+      <button class="edit" onclick="edit(${i})">Edit</button>
+      <button class="delete" onclick="del(${i})">Delete</button>
+    </div>
+    `;
+  }).join('');
+
+  updateStats();
+  drawChart();
+}
+
+function add(){
+  const name=nameInput.value;
+  const attended=parseInt(attendedInput.value);
+  const total=parseInt(totalInput.value);
+
+  if(!name||isNaN(attended)||isNaN(total)){
+    notify("Fill all fields"); return;
+  }
+
+  subjects.push({name,attended,total});
+  save();
+  notify("Added ✅");
+}
+
+function edit(i){
+  const s=subjects[i];
+  nameInput.value=s.name;
+  attendedInput.value=s.attended;
+  totalInput.value=s.total;
+  del(i);
+}
+
+function del(i){
+  subjects.splice(i,1);
+  save();
+}
+
+function save(){
+  localStorage.setItem('subjects',JSON.stringify(subjects));
+  render();
+}
+
+function updateStats(){
+  totalSub.innerText=subjects.length;
+  let avg=0;
+  if(subjects.length){
+    avg=subjects.reduce((a,s)=>a+(s.attended/s.total*100),0)/subjects.length;
+  }
+  avgEl.innerText=avg.toFixed(1)+"%";
+}
+
+function drawChart(){
+  const ctx=document.getElementById("chart").getContext("2d");
+
+  if(chart) chart.destroy();
+
+  chart=new Chart(ctx,{
+    type:chartType,
+    data:{
+      labels:subjects.map(s=>s.name),
+      datasets:[{
+        label:"Attendance %",
+        data:subjects.map(s=>(s.attended/s.total*100)),
+        backgroundColor:"rgba(0,229,255,0.3)",
+        borderColor:"#00e5ff",
+        pointBackgroundColor:"#00e5ff",
+        borderWidth:2,
+        tension:0.3
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{ labels:{ color:"white" } }
+      },
+      scales:{
+        x:{ ticks:{ color:"white" }},
+        y:{
+          min:0,
+          max:100,
+          ticks:{
+            color:"white",
+            callback:value=>value+"%"
+          }
+        }
       }
-      container.innerHTML = subjects.map((s, i) => {
-        const pct = s.total > 0 ? ((s.attended / s.total) * 100).toFixed(1) : 0;
-        const low = pct < 75;
-        const needed = Math.ceil((0.75 * s.total - s.attended) / 0.25);
-        return `<div class="subject-card ${low ? 'low' : 'good'}">
-          <strong>${s.name}</strong>
-          <span class="percent" style="float:right">${pct}%</span>
-          <br>Attended: ${s.attended} / ${s.total}
-          ${low ? `<p class="warning">Below 75%! Need ${needed > 0 ? needed : 0} more classes.</p>` : '<p style="color:#27ae60">On track!</p>'}
-          <button onclick="deleteSubject(${i})" style="background:#e74c3c;color:white;margin-top:8px">Remove</button>
-        </div>`;
-      }).join('');
     }
+  });
+}
 
-    function addSubject() {
-      const name = document.getElementById('subjectName').value.trim();
-      const attended = parseInt(document.getElementById('attended').value);
-      const total = parseInt(document.getElementById('total').value);
-      if (!name || isNaN(attended) || isNaN(total) || total < 1) {
-        alert('Please fill all fields correctly.'); return;
-      }
-      if (attended > total) { alert('Attended cannot exceed total.'); return; }
-      subjects.push({ name, attended, total });
-      localStorage.setItem('subjects', JSON.stringify(subjects));
-      document.getElementById('subjectName').value = '';
-      document.getElementById('attended').value = '';
-      document.getElementById('total').value = '';
-      render();
-    }
+function changeChart(t){ chartType=t; drawChart(); }
 
-    function deleteSubject(i) {
-      subjects.splice(i, 1);
-      localStorage.setItem('subjects', JSON.stringify(subjects));
-      render();
-    }
+function search(){
+  const val=searchInput.value.toLowerCase();
+  render(subjects.filter(s=>s.name.toLowerCase().includes(val)));
+}
 
-    render();
-  </script>
+function sortData(type){
+  if(type==="high"){
+    subjects.sort((a,b)=>(b.attended/b.total)-(a.attended/a.total));
+  } else {
+    subjects.sort((a,b)=>(a.attended/a.total)-(b.attended/a.total));
+  }
+  render();
+}
+
+function toggleDark(){
+  document.body.classList.toggle("dark");
+}
+
+function changeTheme(t){
+  if(t==="purple"){
+    document.body.style.background="linear-gradient(135deg,#41295a,#2F0743)";
+  } else if(t==="dark"){
+    document.body.style.background="#000";
+  } else {
+    document.body.style.background="linear-gradient(135deg,#0f2027,#203a43,#2c5364)";
+  }
+}
+
+function downloadJSON(){
+  const blob=new Blob([JSON.stringify(subjects)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="attendance.json";
+  a.click();
+}
+
+function downloadCSV(){
+  let csv="Subject,Attended,Total\n";
+  subjects.forEach(s=>csv+=`${s.name},${s.attended},${s.total}\n`);
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="attendance.csv";
+  a.click();
+}
+
+const nameInput=document.getElementById('name');
+const attendedInput=document.getElementById('attended');
+const totalInput=document.getElementById('total');
+const totalSub=document.getElementById('totalSub');
+const avgEl=document.getElementById('avg');
+const searchInput=document.getElementById('search');
+
+render();
+</script>
+
 </body>
 </html>
