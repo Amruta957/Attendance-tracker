@@ -59,19 +59,22 @@ Attendance-tracker/
 
 ### 1. Clone Repository
 
-- git clone https://github.com/Amruta957/Attendance-tracker.git
-- cd Attendance-tracker
-
+```bash
+git clone https://github.com/Amruta957/Attendance-tracker.git
+cd Attendance-tracker
+```
 
 ### 2. Install Dependencies
 
+```bash
 npm install
-
+```
 
 ### 3. Run Application
 
+```bash
 node server.js
-
+```
 
 ### 4. Open in Browser
 
@@ -80,13 +83,15 @@ http://localhost:3000
 ---
 
 ## 🧪 Run Tests
-
+```bash
 npm test
+```
 ---
 
 ## 🐳 Docker Usage
 
 ### Build Image
+
 
 docker build -t attendance-tracker .
 
