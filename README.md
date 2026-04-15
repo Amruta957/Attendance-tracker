@@ -4,6 +4,13 @@ A simple Attendance Tracking System built using Node.js and HTML, integrated wit
 
 ---
 
+## 🎯 Problem Statement
+Students often struggle to track their attendance percentage manually, which can lead to shortage of attendance and academic penalties.
+
+This system provides a simple way to monitor attendance and ensure students meet the required criteria.
+
+---
+
 ## 🚀 Overview
 
 This project demonstrates how to:
@@ -24,6 +31,16 @@ This project demonstrates how to:
 
 ---
 
+## 🔄 DevOps Lifecycle Implemented
+
+✔ Version Control using GitHub  
+✔ Automated Build using npm  
+✔ Continuous Integration using GitHub Actions  
+✔ Automated Testing  
+✔ Containerization using Docker  
+✔ Cloud Deployment using Render  
+
+---
 ## 🛠️ Tech Stack
 
 - Frontend: HTML  
@@ -33,7 +50,18 @@ This project demonstrates how to:
 ---
 
 ## 📂 Project Structure
-<img width="703" height="305" alt="image" src="https://github.com/user-attachments/assets/0356d144-691f-464c-bfad-5633ac5d2d81" />
+
+Attendance-tracker/
+│
+├── .github/workflows/   # CI/CD pipeline configuration (GitHub Actions)
+├── __tests__/           # Automated test cases
+├── Dockerfile           # Docker container configuration
+├── .dockerignore        # Excludes unnecessary files from Docker image
+├── server.js            # Node.js backend server
+├── index.html           # Frontend UI (HTML)
+├── package.json         # Dependencies and npm scripts
+├── .gitignore           # Files ignored by Git
+└── README.md            # Project documentation
 
 ---
 
@@ -41,8 +69,8 @@ This project demonstrates how to:
 
 ### 1. Clone Repository
 
-git clone <your-repo-url>
-cd attendance-tracker
+git clone https://github.com/Amruta957/Attendance-tracker.git
+cd Attendance-tracker
 
 
 ### 2. Install Dependencies
@@ -118,5 +146,10 @@ https://attendance-tracker-zsj2.onrender.com
 - Add authentication system  
 - Improve UI  
 - Deploy to cloud (AWS/Azure)  
+
+---
+
+## 🎤 Conclusion
+This project successfully demonstrates the implementation of a complete DevOps pipeline, integrating development, testing, automation, containerization, and deployment into a single workflow.
 
 ---
