@@ -91,6 +91,16 @@ Workflow files are located in:
 .github/workflows/
 
 ---
+## ☁️ Deployment
+
+The application is deployed on Render:
+
+🔗 Live URL:
+https://attendance-tracker-zsj2.onrender.com
+
+- Connected to GitHub repository
+- Auto-deploy enabled
+- Ensures continuous delivery
 
 ## 📌 DevOps Concepts Used
 
