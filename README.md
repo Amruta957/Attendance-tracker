@@ -41,7 +41,6 @@ This project demonstrates how to:
 
 ## 📂 Project Structure
 
-<img width="780" height="313" alt="image" src="https://github.com/user-attachments/assets/287e75e4-e484-49fa-95ae-b3723a8b3dcd" />
 
 ```bash
 Attendance-tracker/
