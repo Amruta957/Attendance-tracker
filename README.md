@@ -59,8 +59,8 @@ Attendance-tracker/
 
 ### 1. Clone Repository
 
-git clone https://github.com/Amruta957/Attendance-tracker.git
-cd Attendance-tracker
+- git clone https://github.com/Amruta957/Attendance-tracker.git
+- cd Attendance-tracker
 
 
 ### 2. Install Dependencies
