@@ -94,13 +94,15 @@ npm test
 
 ### Build Image
 
-
+```bash
 docker build -t attendance-tracker .
-
+```
 
 ### Run Container
 
+```bash
 docker run -p 3000:3000 attendance-tracker
+```
 
 ---
 
@@ -113,7 +115,9 @@ GitHub Actions is used for:
 
 Workflow files are located in:
 
+```bash
 .github/workflows/
+```
 
 ---
 ## ☁️ Deployment
