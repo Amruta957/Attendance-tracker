@@ -41,6 +41,9 @@ This project demonstrates how to:
 
 ## 📂 Project Structure
 
+<img width="780" height="313" alt="image" src="https://github.com/user-attachments/assets/287e75e4-e484-49fa-95ae-b3723a8b3dcd" />
+
+```bash
 Attendance-tracker/
 │
 ├── .github/workflows/   # CI/CD pipeline configuration (GitHub Actions)
@@ -52,7 +55,7 @@ Attendance-tracker/
 ├── package.json         # Dependencies and npm scripts
 ├── .gitignore           # Files ignored by Git
 └── README.md            # Project documentation
-
+```
 ---
 
 ## ⚙️ Setup Instructions
