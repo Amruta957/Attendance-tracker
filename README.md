@@ -33,7 +33,7 @@ This project demonstrates how to:
 
 ## 🛠️ Tech Stack
 
-- Frontend: HTML  
+- Frontend: HTML, CSS, JavaScript  
 - Backend: Node.js (JavaScript)  
 - DevOps: Docker, GitHub Actions  
 
